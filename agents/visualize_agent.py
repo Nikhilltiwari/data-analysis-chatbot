@@ -1,13 +1,17 @@
-import matplotlib.pyplot as plt
 import pandas as pd
-from io import BytesIO
-import base64
-from camel_agents import CamelAgent
+from camel import CAMELAgent
+import plotly.express as px
 
-class VisualizeAgent(CamelAgent):
-    def create_plot(self, query: str, df: pd.DataFrame) -> str:
-        if 'sales trend' in query and 'Q1' in query:
+class VisualizeAgent(CAMELAgent):
+    def create_plot(self, query: str, df: pd.DataFrame, langchain) -> str:
+        # Use LangChain to get visualization instructions
+        context = {'dataframe': df.to_dict()}
+        visualization_instructions = langchain.run(query=query, context=context)
+        
+        # Example of how to use the instructions (simplified)
+        if "line chart" in visualization_instructions:
             fig = px.line(df, x='date', y='sales', title='Sales Trend for Q1')
             plot_url = fig.to_html(full_html=False)
             return plot_url
-        return 'Query not understood'
+        return "Visualization query not understood"
+

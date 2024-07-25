@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import JSONResponse
 from camel_agent_manager import CamelAgentManager
-from services.nlp import analyze_query_with_llm
 
 router = APIRouter()
 agent_manager = CamelAgentManager()
@@ -12,7 +11,7 @@ async def analyze_query(query: str, filename: str):
     if df is None:
         raise HTTPException(status_code=404, detail="File not found")
 
-    llm_response = analyze_query_with_llm(query, df.columns.tolist())
-    result = agent_manager.get_agent('analyze').process_query(llm_response, df)
+    result = agent_manager.process_query('analyze', query, df)
     return JSONResponse(content={"result": result})
+
 
