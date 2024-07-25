@@ -12,3 +12,4 @@ async def visualize(query: str, filename: str):
         raise HTTPException(status_code=404, detail="File not found")
     plot_url = agent_manager.get_agent('visualize').create_plot(query, df)
     return JSONResponse(content={"plot_url": plot_url})
+
