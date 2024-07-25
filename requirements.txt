@@ -1,0 +1,6 @@
+fastapi
+pandas
+uvicorn
+matplotlib
+plotly
+camel_agents
