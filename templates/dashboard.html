@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Data Analysis Dashboard</h1>
+<div id="result"></div>
+<div id="plot"></div>
+<form id="queryForm">
+    <input type="text" id="queryInput" placeholder="Enter your query">
+    <button type="submit">Analyze</button>
+</form>
+<script>
+document.getElementById('queryForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const queryInput = document.getElementById('queryInput').value;
+
+    const response = await fetch('/api/v1/analyze', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ query: queryInput, filename: 'your_file_name.csv' })
+    });
+
+    const result = await response.json();
+    document.getElementById('result').innerText = `Result: ${result.result}`;
+
+    if (queryInput.includes('plot')) {
+        const plotResponse = await fetch('/api/v1/visualize', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ query: queryInput, filename: 'your_file_name.csv' })
+        });
+
+        const plotResult = await plotResponse.json();
+        document.getElementById('plot').innerHTML = plotResult.plot_url;
+    }
+};
+</script>
+{% endblock %}
