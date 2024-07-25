@@ -1,8 +1,7 @@
 import requests
-from prompt import get_llm_prompt
 
-def analyze_query_with_llm(query: str, df_columns: list):
-    llm_prompt = get_llm_prompt()
-    response = requests.post('OLLAMA_API_URL', json={'prompt': llm_prompt, 'query': query, 'columns': df_columns})
-    answer = response.json().get('answer')
-    return answer
+LLAMA_API_URL = "http://localhost:5000/llama"
+
+def call_llama_model(prompt: str, context: dict):
+    response = requests.post(LLAMA_API_URL, json={'prompt': prompt, 'context': context})
+    return response.json().get('response')
