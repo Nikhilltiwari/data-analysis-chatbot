@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Welcome to the Data Analysis Chatbot</h1>
+<form id="uploadForm" enctype="multipart/form-data">
+    <input type="file" name="file" id="fileInput">
+    <button type="submit">Upload</button>
+</form>
+<div id="columns"></div>
+<script>
+document.getElementById('uploadForm').onsubmit = async function(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('fileInput');
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    const response = await fetch('/api/v1/upload', {
+        method: 'POST',
+        body: formData
+    });
+
+    const result = await response.json();
+    document.getElementById('columns').innerText = `Columns: ${result.columns.join(', ')}`;
+};
+</script>
+{% endblock %}
