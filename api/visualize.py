@@ -13,3 +13,4 @@ async def visualize(query: str, filename: str):
     plot_url = agent_manager.get_agent('visualize').create_plot(query, df)
     return JSONResponse(content={"plot_url": plot_url})
 
+
