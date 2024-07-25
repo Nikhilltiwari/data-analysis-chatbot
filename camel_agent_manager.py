@@ -1,4 +1,4 @@
-from camel import CAMELAgent
+from camel.agents import CAMELAgent
 from langchain.chains import LLMChain
 from langchain.prompts import ChatPromptTemplate
 from services.nlp import call_llama_model
@@ -7,9 +7,9 @@ from prompt import get_llm_prompt
 class CamelAgentManager:
     def __init__(self):
         self.agents = {
-            'preprocess': CAMELAgent(role_name='Preprocess Agent', task='preprocess'),
-            'analyze': CAMELAgent(role_name='Analyze Agent', task='analyze'),
-            'visualize': CAMELAgent(role_name='Visualize Agent', task='visualize')
+            'preprocess': CAMELAgent(task='preprocess', role_name='Preprocess Agent'),
+            'analyze': CAMELAgent(task='analyze', role_name='Analyze Agent'),
+            'visualize': CAMELAgent(task='visualize', role_name='Visualize Agent')
         }
         self.dataframes = {}
         self.langchain = LLMChain(llm=call_llama_model, prompt=ChatPromptTemplate.from_string(get_llm_prompt()))
@@ -32,4 +32,5 @@ class CamelAgentManager:
         context = {'dataframe': df.to_dict()}
         response = self.langchain.run(query=query, context=context)
         return response
+
 

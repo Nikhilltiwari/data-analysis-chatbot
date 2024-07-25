@@ -1,5 +1,5 @@
 import pandas as pd
-from camel import CAMELAgent
+from camel.agents import CAMELAgent
 import plotly.express as px
 
 class VisualizeAgent(CAMELAgent):
@@ -12,5 +12,6 @@ class VisualizeAgent(CAMELAgent):
             plot_url = fig.to_html(full_html=False)
             return plot_url
         return "Visualization query not understood"
+
 
 
