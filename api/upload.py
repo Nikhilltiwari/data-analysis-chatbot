@@ -2,7 +2,6 @@ from fastapi import APIRouter, UploadFile, File, HTTPException
 from fastapi.responses import JSONResponse
 import pandas as pd
 import io
-from services.data_processing import process_data
 from camel_agent_manager import CamelAgentManager
 
 router = APIRouter()

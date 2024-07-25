@@ -1,8 +1,14 @@
 from fastapi import FastAPI
 from api import upload, analyze, visualize
 from services.monitoring import setup_monitoring
+from camel_agent_manager import CamelAgentManager
 
 app = FastAPI()
+agent_manager = CamelAgentManager()
+
+@app.on_event("startup")
+async def startup_event():
+    agent_manager.initialize_agents()
 
 # Include routers
 app.include_router(upload.router, prefix="/api/v1/upload")
@@ -19,6 +25,7 @@ async def root():
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
+
 
 
 
