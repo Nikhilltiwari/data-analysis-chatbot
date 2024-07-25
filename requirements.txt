@@ -1,6 +1,8 @@
 fastapi
 pandas
 uvicorn
-matplotlib
 plotly
-prometheus_fastapi_instrumentator
+requests
+camel
+langchain
+

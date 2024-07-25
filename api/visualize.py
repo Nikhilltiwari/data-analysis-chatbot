@@ -14,3 +14,4 @@ async def visualize(query: str, filename: str):
     return JSONResponse(content={"plot_url": plot_url})
 
 
+
