@@ -4,3 +4,4 @@ uvicorn
 matplotlib
 plotly
 camel_agents
+prometheus_fastapi_instrumentator
