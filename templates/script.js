@@ -10,8 +10,12 @@ document.getElementById('uploadForm').addEventListener('submit', async function 
         body: formData,
     });
 
-    const result = await response.json();
-    alert(result.message);
+    if (response.ok) {
+        const result = await response.json();
+        alert(result.message);
+    } else {
+        alert("Failed to upload the file.");
+    }
 });
 
 document.getElementById('queryButton').addEventListener('click', async function () {
@@ -30,6 +34,12 @@ document.getElementById('queryButton').addEventListener('click', async function 
         }),
     });
 
-    const result = await response.json();
-    document.getElementById('responseOutput').textContent = JSON.stringify(result, null, 2);
+    if (response.ok) {
+        const result = await response.json();
+        document.getElementById('responseOutput').textContent = JSON.stringify(result, null, 2);
+    } else {
+        alert("Failed to process the query.");
+    }
 });
+
+

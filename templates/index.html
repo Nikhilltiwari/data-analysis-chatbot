@@ -8,27 +8,17 @@
 </head>
 <body>
     <h1>Data Analysis Chatbot</h1>
-    
-    <div class="upload-section">
-        <h2>Upload CSV or Excel File</h2>
-        <form id="uploadForm">
-            <input type="file" id="fileInput" accept=".csv, .xlsx">
-            <button type="submit">Upload</button>
-        </form>
-    </div>
-
-    <div class="query-section">
-        <h2>Ask a Query</h2>
-        <textarea id="queryInput" rows="4" cols="50" placeholder="Enter your query here..."></textarea>
-        <button id="queryButton">Submit Query</button>
-    </div>
-
-    <div class="response-section">
-        <h2>Response</h2>
-        <pre id="responseOutput"></pre>
-    </div>
-
+    <h2>Upload CSV or Excel File</h2>
+    <form id="uploadForm">
+        <input type="file" id="fileInput" accept=".csv, .xls, .xlsx">
+        <button type="submit">Upload</button>
+    </form>
+    <h2>Ask a Question</h2>
+    <input type="text" id="queryInput" placeholder="Enter your query">
+    <button id="queryButton">Ask</button>
+    <pre id="responseOutput"></pre>
     <script src="script.js"></script>
 </body>
 </html>
+
 

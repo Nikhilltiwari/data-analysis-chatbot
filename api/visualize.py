@@ -1,17 +1,28 @@
-from fastapi import APIRouter, HTTPException
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Depends
+from pydantic import BaseModel
 from camel_agent_manager import CamelAgentManager
+from dependencies import get_agent_manager
 
 router = APIRouter()
-agent_manager = CamelAgentManager()
 
-@router.post("/")
-async def visualize(query: str, filename: str):
-    df = agent_manager.retrieve_dataframe(filename)
-    if df is None:
-        raise HTTPException(status_code=404, detail="File not found")
-    plot_url = agent_manager.process_query('visualize', query, df)
-    return JSONResponse(content={"plot_url": plot_url})
+class VisualizeRequest(BaseModel):
+    task: str
+    query: str
+    filename: str
+
+@router.post("")
+async def visualize_data(request: VisualizeRequest, agent_manager: CamelAgentManager = Depends(get_agent_manager)):
+    try:
+        dataframe = agent_manager.retrieve_dataframe(request.filename)
+        if dataframe is None:
+            raise HTTPException(status_code=404, detail="File not found")
+        
+        # Process the query using the agent manager
+        response = agent_manager.process_query(request.task, request.query, dataframe)
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
