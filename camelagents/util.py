@@ -1,3 +1,4 @@
+import re
 from langchain.prompts.chat import (
     HumanMessagePromptTemplate,
     SystemMessagePromptTemplate,
@@ -132,3 +133,4 @@ def camel_chat(user_agent, assistant_agent, assistant_msg):
         f.write(camel_response)
 
     return camel_response
+

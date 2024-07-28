@@ -13,7 +13,7 @@ class CamelAgentManager:
             'visualize': CAMELAgent(role_name='Visualize Agent', task='visualize')
         }
         self.dataframes = {}
-        self.langchain = LLMChain(llm=call_openai_model, prompt=ChatPromptTemplate.from_string(get_llm_prompt()))
+        self.langchain = LLMChain(llm=call_openai_model, prompt=ChatPromptTemplate(template=get_llm_prompt()))
 
     def initialize_agents(self):
         for agent in self.agents.values():
