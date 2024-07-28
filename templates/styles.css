@@ -1,0 +1,21 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+.upload-section, .query-section, .response-section {
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: 100%;
+}
+
+button {
+    display: block;
+    margin-top: 10px;
+}

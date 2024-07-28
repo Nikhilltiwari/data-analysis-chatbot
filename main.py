@@ -8,7 +8,9 @@ agent_manager = CamelAgentManager()
 
 @app.on_event("startup")
 async def startup_event():
-    agent_manager.initialize_agents()
+    # Commented out the initialize_agents call as it's not needed
+    # agent_manager.initialize_agents()
+    pass
 
 # Include routers
 app.include_router(upload.router, prefix="/api/v1/upload")
@@ -25,6 +27,7 @@ async def root():
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='0.0.0.0', port=8000)
+
 
 
 

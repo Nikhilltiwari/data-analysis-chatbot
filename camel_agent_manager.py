@@ -1,5 +1,4 @@
 from camelagents.camel_agent import CAMELAgent
-from langchain.chains import RunnableSequence
 from langchain.prompts import ChatPromptTemplate
 from services.nlp import call_openai_model
 from prompt import get_llm_prompt
@@ -14,11 +13,9 @@ class CamelAgentManager:
         }
         self.dataframes = {}
         prompt = get_llm_prompt()
-        self.langchain = RunnableSequence(prompt | call_openai_model)
+        self.runnable_chain = prompt | call_openai_model
 
-    def initialize_agents(self):
-        for agent in self.agents.values():
-            agent.init_agent()
+    # Removed the initialize_agents method as it's not needed
 
     def store_dataframe(self, filename, dataframe):
         self.dataframes[filename] = dataframe
@@ -32,8 +29,9 @@ class CamelAgentManager:
     def process_query(self, task, query, df):
         agent = self.get_agent(task)
         context = {'dataframe': df.to_dict()}
-        response = self.langchain.invoke({"input": query, "context": context})
+        response = self.runnable_chain.invoke({"input": query, "context": context})
         return response
+
 
 
 
