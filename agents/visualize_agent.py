@@ -7,11 +7,14 @@ class VisualizeAgent(CAMELAgent):
         context = {'dataframe': df.to_dict()}
         visualization_instructions = langchain.run(query=query, context=context)
         
-        if "line chart" in visualization_instructions:
-            fig = px.line(df, x='date', y='sales', title='Sales Trend for Q1')
+        try:
+            fig = eval(visualization_instructions)
             plot_url = fig.to_html(full_html=False)
             return plot_url
-        return "Visualization query not understood"
+        except Exception as e:
+            return f"Visualization query not understood: {e}"
+
+
 
 
 
