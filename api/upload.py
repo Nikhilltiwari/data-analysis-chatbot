@@ -4,6 +4,7 @@ from io import BytesIO
 from camel_agent_manager import CamelAgentManager
 from dependencies import get_agent_manager
 import logging
+import mimetypes
 
 router = APIRouter()
 
@@ -13,12 +14,15 @@ async def upload_file(file: UploadFile = File(...), agent_manager: CamelAgentMan
         logging.info(f"Received file: {file.filename}")
         contents = await file.read()
         file_extension = file.filename.split('.')[-1].lower()
+        mime_type, _ = mimetypes.guess_type(file.filename)
 
         logging.info(f"File extension: {file_extension}")
+        logging.info(f"MIME type: {mime_type}")
+        logging.info(f"First 100 bytes of file content: {contents[:100]}")
 
-        if file_extension == 'csv':
+        if file_extension == 'csv' or 'csv' in mime_type:
             dataframe = read_csv(BytesIO(contents))
-        elif file_extension in ['xls', 'xlsx']:
+        elif file_extension in ['xls', 'xlsx'] or mime_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
             dataframe = read_excel(BytesIO(contents))
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type")
@@ -33,6 +37,9 @@ async def upload_file(file: UploadFile = File(...), agent_manager: CamelAgentMan
     except Exception as e:
         logging.error(f"Error processing file: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
 
 
 

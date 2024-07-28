@@ -14,20 +14,23 @@ class AnalyzeRequest(BaseModel):
 @router.post("")
 async def analyze_data(request: AnalyzeRequest, agent_manager: CamelAgentManager = Depends(get_agent_manager)):
     try:
-        logging.info(f"Received analyze request: {request}")
+        logging.info(f"Received analyze request: task='{request.task}' query='{request.query}' filename='{request.filename}'")
 
-        dataframe = agent_manager.retrieve_dataframe(request.filename)
+        dataframe = agent_manager.get_dataframe(request.filename)
         if dataframe is None:
-            logging.error("File not found")
-            raise HTTPException(status_code=404, detail="File not found")
+            raise HTTPException(status_code=404, detail="Dataframe not found")
 
         logging.info(f"Dataframe shape for analysis: {dataframe.shape}")
 
-        # Process the query using the agent manager
-        response = agent_manager.process_query(request.task, request.query, dataframe)
-        logging.info(f"Analysis response: {response}")
+        context = {
+            'dataframe': dataframe,
+            'query': request.query
+        }
 
-        return {"response": response}
+        # Assuming call_openai_model is a method of CamelAgentManager that needs context
+        result = agent_manager.call_openai_model(context)
+
+        return {"result": result}
     except Exception as e:
         logging.error(f"Error analyzing data: {e}")
         raise HTTPException(status_code=500, detail=str(e))
