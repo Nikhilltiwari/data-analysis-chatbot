@@ -5,4 +5,5 @@ plotly
 requests
 camel
 langchain
+prometheus-fastapi-instrumentator
 
