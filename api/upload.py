@@ -1,7 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
 from pandas import read_csv, read_excel
 from io import BytesIO
-from camel_agent_manager import CamelAgentManager
+from main import agent_manager  # Import agent_manager from the main application
 
 router = APIRouter()
 
@@ -23,6 +23,7 @@ async def upload_file(file: UploadFile = File(...)):
         return {"filename": filename, "message": "File uploaded successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
 
 
 
