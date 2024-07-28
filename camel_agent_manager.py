@@ -1,5 +1,5 @@
 from camelagents.camel_agent import CAMELAgent
-from langchain.chains import LLMChain
+from langchain.chains import RunnableSequence
 from langchain.prompts import ChatPromptTemplate
 from services.nlp import call_openai_model
 from prompt import get_llm_prompt
@@ -13,7 +13,8 @@ class CamelAgentManager:
             'visualize': CAMELAgent(role_name='Visualize Agent', task='visualize')
         }
         self.dataframes = {}
-        self.langchain = LLMChain(llm=call_openai_model, prompt=ChatPromptTemplate(template=get_llm_prompt()))
+        prompt = get_llm_prompt()
+        self.langchain = RunnableSequence(prompt | call_openai_model)
 
     def initialize_agents(self):
         for agent in self.agents.values():
@@ -31,8 +32,10 @@ class CamelAgentManager:
     def process_query(self, task, query, df):
         agent = self.get_agent(task)
         context = {'dataframe': df.to_dict()}
-        response = self.langchain.run(query=query, context=context)
+        response = self.langchain.invoke({"input": query, "context": context})
         return response
+
+
 
 
 
