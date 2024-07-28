@@ -1,21 +1,28 @@
 from fastapi import APIRouter, UploadFile, File, HTTPException
-from fastapi.responses import JSONResponse
-import pandas as pd
-import io
+from pandas import read_csv, read_excel
+from io import BytesIO
 from camel_agent_manager import CamelAgentManager
 
 router = APIRouter()
-agent_manager = CamelAgentManager()
 
-@router.post("/")
+@router.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     try:
-        df = pd.read_csv(io.BytesIO(await file.read()))
-        processed_df = agent_manager.process_query('preprocess', "Preprocess the dataframe", df)
-        agent_manager.store_dataframe(file.filename, processed_df)
-        return JSONResponse(content={"message": "File uploaded successfully", "columns": processed_df.columns.tolist()})
+        contents = await file.read()
+        file_extension = file.filename.split('.')[-1].lower()
+        
+        if file_extension == 'csv':
+            dataframe = read_csv(BytesIO(contents))
+        elif file_extension in ['xls', 'xlsx']:
+            dataframe = read_excel(BytesIO(contents))
+        else:
+            raise HTTPException(status_code=400, detail="Unsupported file type")
+
+        filename = file.filename
+        agent_manager.store_dataframe(filename, dataframe)
+        return {"filename": filename, "message": "File uploaded successfully"}
     except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 
