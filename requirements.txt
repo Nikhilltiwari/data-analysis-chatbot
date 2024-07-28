@@ -3,7 +3,11 @@ pandas
 uvicorn
 plotly
 requests
+openai
 camel
 langchain
 prometheus-fastapi-instrumentator
+python-dotenv
+
+
 

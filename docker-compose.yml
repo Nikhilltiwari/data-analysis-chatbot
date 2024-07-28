@@ -11,13 +11,5 @@ services:
       - APP_NAME=${APP_NAME}
       - APP_ENV=${APP_ENV}
       - LOG_LEVEL=${LOG_LEVEL}
-  llama:
-    image: llama:latest
-    ports:
-      - "5000:5000"
-    environment:
-      - MODEL_PATH=/models/llama-quantized
-    volumes:
-      - ./models:/models
 
 
