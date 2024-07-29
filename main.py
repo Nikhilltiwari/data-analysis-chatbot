@@ -8,12 +8,10 @@ agent_manager = CamelAgentManager()
 
 @app.on_event("startup")
 async def startup_event():
-    # Commented out the initialize_agents call as it's not needed
-    # agent_manager.initialize_agents()
     pass
 
-# Include routers
-app.include_router(upload.router, prefix="/api/v1/upload")
+# Include routers with the same prefix for consistency
+app.include_router(upload.router, prefix="/api/v1")
 app.include_router(analyze.router, prefix="/api/v1/analyze")
 app.include_router(visualize.router, prefix="/api/v1/visualize")
 

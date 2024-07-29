@@ -1,42 +1,34 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
-from pandas import read_csv, read_excel
-from io import BytesIO
-from camel_agent_manager import CamelAgentManager
+from fastapi import APIRouter, UploadFile, File, HTTPException
+import pandas as pd
+import io
 from dependencies import get_agent_manager
 import logging
-import mimetypes
 
 router = APIRouter()
+agent_manager = get_agent_manager()
 
-@router.post("")
-async def upload_file(file: UploadFile = File(...), agent_manager: CamelAgentManager = Depends(get_agent_manager)):
+@router.post("/upload")
+async def upload_file(file: UploadFile = File(...)):
     try:
-        logging.info(f"Received file: {file.filename}")
         contents = await file.read()
-        file_extension = file.filename.split('.')[-1].lower()
-        mime_type, _ = mimetypes.guess_type(file.filename)
-
-        logging.info(f"File extension: {file_extension}")
-        logging.info(f"MIME type: {mime_type}")
-        logging.info(f"First 100 bytes of file content: {contents[:100]}")
-
-        if file_extension == 'csv' or 'csv' in mime_type:
-            dataframe = read_csv(BytesIO(contents))
-        elif file_extension in ['xls', 'xlsx'] or mime_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
-            dataframe = read_excel(BytesIO(contents))
+        if file.content_type == 'text/csv':
+            df = pd.read_csv(io.BytesIO(contents))
+        elif file.content_type in ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet']:
+            df = pd.read_excel(io.BytesIO(contents))
         else:
             raise HTTPException(status_code=400, detail="Unsupported file type")
 
-        logging.info(f"Dataframe shape: {dataframe.shape}")
-
-        filename = file.filename
-        agent_manager.store_dataframe(filename, dataframe)
-        logging.info(f"Stored dataframe with filename: {filename}")
-
-        return {"filename": filename, "message": "File uploaded successfully"}
+        agent_manager.store_dataframe(file.filename, df)
+        return {"filename": file.filename, "message": "File uploaded successfully"}
     except Exception as e:
-        logging.error(f"Error processing file: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+        logging.error(f"Error uploading file: {str(e)}")
+        raise HTTPException(status_code=500, detail="Error processing file")
+
+
+
+
+
+
 
 
 
